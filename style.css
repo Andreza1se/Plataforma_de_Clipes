@@ -1,0 +1,131 @@
+/* Reseta as margens padrão do navegador */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #121212; /* Fundo escuro, ideal para vídeos */
+    color: white;
+}
+
+/* --- CABEÇALHO --- */
+.navbar {
+    position: fixed; /* Fica fixo no topo */
+    top: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.8); /* Fundo preto levemente transparente */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 100; /* Fica sempre por cima dos vídeos */
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00e5ff; /* Um azul neon bacana */
+}
+
+.search-bar {
+    padding: 8px;
+    width: 300px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    background-color: #333;
+    color: white;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.upload-btn {
+    padding: 8px 15px;
+    background-color: #ff0050; /* Cor meio TikTok */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- FEED DE VÍDEOS --- */
+.feed {
+    height: 100vh; /* Ocupa 100% da altura da tela */
+    overflow-y: scroll; /* Permite rolar para baixo */
+    scroll-snap-type: y mandatory; /* Efeito de travar no vídeo */
+}
+
+/* Ocultar a barra de rolagem (opcional, deixa mais bonito) */
+.feed::-webkit-scrollbar {
+    display: none;
+}
+
+.video-container {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    scroll-snap-align: start; /* Onde a rolagem trava */
+    padding-top: 60px; /* Compensa a altura do cabeçalho */
+}
+
+.video-player {
+    height: 100%;
+    width: 100%;
+    max-width: 500px; /* Largura máxima para não ficar gigante no PC */
+    background-color: black;
+    object-fit: cover; /* Faz o vídeo preencher o espaço */
+}
+
+/* --- INFORMAÇÕES POR CIMA DO VÍDEO --- */
+.video-sidebar {
+    position: absolute;
+    right: calc(50% - 240px); /* Ajusta para ficar do lado direito do vídeo */
+    bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.action-btn span {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.video-info {
+    position: absolute;
+    left: calc(50% - 240px); /* Ajusta para ficar no lado esquerdo do vídeo */
+    bottom: 50px;
+    width: 300px;
+}
+
+.video-info h3 {
+    margin-bottom: 5px;
+}
+
+.musica {
+    margin-top: 10px;
+    font-size: 14px;
+    animation: scrollText 5s linear infinite; /* Efeito da música rolando */
+}

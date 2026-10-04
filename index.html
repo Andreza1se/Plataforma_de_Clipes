@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipEdit - Plataforma de Clipes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Cabeçalho / Menu Superior -->
+    <header class="navbar">
+        <div class="logo">ClipEdit 🎬</div>
+        <input type="text" placeholder="Buscar edits (ex: futebol, animes)..." class="search-bar">
+        <div class="nav-buttons">
+            <button class="upload-btn">+ Novo Edit</button>
+            <div class="perfil-icone">👤</div>
+        </div>
+    </header>
+
+    <!-- Feed de Vídeos -->
+    <main class="feed">
+        
+        <!-- Bloco do Vídeo 1 -->
+        <section class="video-container">
+            <!-- Coloque o link de um vídeo MP4 real no 'src' para testar -->
+            <video class="video-player" src="https://www.w3schools.com/html/mov_bbb.mp4" loop controls></video>
+            
+            <!-- Informações que ficam por cima do vídeo -->
+            <div class="video-sidebar">
+                <button class="action-btn">❤️<span>1.2k</span></button>
+                <button class="action-btn">💬<span>300</span></button>
+                <button class="action-btn">🔗<span>Share</span></button>
+            </div>
+
+            <div class="video-info">
+                <h3>@ronaldinho_edits</h3>
+                <p>Melhores dribles 2005 ⚽🔥 #futebol #skills</p>
+                <p class="musica">🎵 MC Fulano - Remix Slowed</p>
+            </div>
+        </section>
+
+        <!-- Bloco do Vídeo 2 (Para testar a rolagem) -->
+        <section class="video-container">
+            <video class="video-player" src="https://www.w3schools.com/html/mov_bbb.mp4" loop controls></video>
+            
+            <div class="video-sidebar">
+                <button class="action-btn">❤️<span>5.4k</span></button>
+                <button class="action-btn">💬<span>800</span></button>
+                <button class="action-btn">🔗<span>Share</span></button>
+            </div>
+
+            <div class="video-info">
+                <h3>@anime_vibes</h3>
+                <p>Zoro vs King Edit ⚔️ #onepiece #edit</p>
+                <p class="musica">🎵 Phonk - Automotivo</p>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>
