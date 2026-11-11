@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "create-adonisjs": "^3.4.0"
+  },
+  "_npx": {
+    "packages": [
+      "create-adonisjs@latest"
+    ]
+  }
+}
