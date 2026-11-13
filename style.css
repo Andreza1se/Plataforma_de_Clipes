@@ -1328,14 +1328,13 @@ a {
 
 .community-card-copy h2 {
     font: 600 24px "Space Grotesk", sans-serif;
-    margin: 5px 0;
-    color: #43202f
+    margin: 5px 0
 }
 
 .community-card-copy p {
     font-size: 11px;
     line-height: 1.55;
-    color: #24282a
+    color: #bec6bb
 }
 
 .community-card-copy .button {
@@ -1379,6 +1378,88 @@ a {
     padding: 5px 8px;
     border-radius: 4px;
     font-size: 10px
+}
+
+.clip-editor {
+    display: grid;
+    gap: 10px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line)
+}
+
+.clip-editor[hidden] {
+    display: none
+}
+
+.clip-editor-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px
+}
+
+.clip-editor-heading strong {
+    font-size: 11px
+}
+
+.clip-editor-heading span {
+    color: var(--muted);
+    font-size: 10px;
+    text-align: right
+}
+
+.clip-time-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px
+}
+
+.clip-time-fields label {
+    display: grid;
+    gap: 5px;
+    color: var(--muted);
+    font-size: 10px
+}
+
+.clip-time-fields input {
+    min-width: 0;
+    width: 100%;
+    padding: 8px 9px;
+    color: var(--text);
+    background: #111511;
+    border: 1px solid var(--line);
+    border-radius: 5px
+}
+
+.timeline-track {
+    position: relative;
+    height: 12px;
+    overflow: hidden;
+    border: 1px solid #3c463a;
+    border-radius: 3px;
+    background: #111511
+}
+
+.timeline-track span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    min-width: 2px;
+    background: var(--lime)
+}
+
+.audio-timeline span {
+    background: var(--orange)
+}
+
+.audio-offset {
+    width: 100%;
+    margin: 0;
+    accent-color: var(--orange)
+}
+
+.timing-error {
+    color: #ff9e8e !important
 }
 
 .music-picker {
@@ -1631,7 +1712,7 @@ a {
 }
 
 .fandom-green {
-    background: conic-gradient( #b0d324, #fce532, #f6c04ced)
+    background: conic-gradient(#c6f36b, #62d3a2, #e1f781)
 }
 
 .community-card.fandom-violet:before {
