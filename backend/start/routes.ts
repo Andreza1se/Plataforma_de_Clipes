@@ -37,6 +37,7 @@ router.get('/api/clips', (ctx) => clips.index(ctx))
 router.post('/api/clips', (ctx) => clips.store(ctx))
 router.patch('/api/clips/:id', (ctx) => clips.update(ctx))
 router.get('/media/:filename', (ctx) => clips.media(ctx))
+router.get('/assets/videos/:category/:filename', (ctx) => clips.assetMedia(ctx))
 
 router
   .group(() => {

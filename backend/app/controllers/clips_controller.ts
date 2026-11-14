@@ -48,6 +48,12 @@ function isTikTokUrl(value: string) {
 }
 
 function serialize(clip: Clip) {
+  const mediaUrl = clip.mediaFilename?.startsWith('assets/')
+    ? `/${clip.mediaFilename.split('/').map(encodeURIComponent).join('/')}`
+    : clip.mediaFilename
+      ? `/media/${clip.mediaFilename}`
+      : undefined
+
   return {
     id: `server-${clip.id}`,
     title: clip.title,
@@ -69,7 +75,7 @@ function serialize(clip: Clip) {
     theme: clip.theme,
     date: clip.createdAt.toRelative({ locale: 'pt-BR' }) || 'agora',
     status: clip.status,
-    url: clip.mediaFilename ? `/media/${clip.mediaFilename}` : undefined,
+    url: mediaUrl,
     audioUrl: clip.audioFilename ? `/media/${clip.audioFilename}` : undefined,
     tiktokUrl: clip.tiktokUrl,
     comments: [],
@@ -237,6 +243,41 @@ export default class ClipsController {
       return response.status(416)
     }
 
+    response.status(206)
+    response.header('Content-Range', `bytes ${start}-${end}/${size}`)
+    response.header('Content-Length', String(end - start + 1))
+    return response.stream(createReadStream(mediaPath, { start, end }))
+  }
+
+  async assetMedia({ params, request, response }: HttpContext) {
+    const category = decodeURIComponent(params.category || '')
+    const filename = decodeURIComponent(params.filename || '')
+    const categories = new Set(['kpop', 'dorama', 'anime', 'futebol', 'filmes e series'])
+    if (!categories.has(category) || !/^[\w.-]+\.mp4$/i.test(filename)) return response.notFound()
+
+    const mediaPath = app.makePath('../assets/videos', category, filename)
+    if (!existsSync(mediaPath)) return response.notFound()
+    const size = statSync(mediaPath).size
+    response.header('Content-Type', 'video/mp4')
+    response.header('Content-Disposition', 'inline')
+    response.header('Accept-Ranges', 'bytes')
+    const range = request.header('range')
+    if (!range) {
+      response.header('Content-Length', String(size))
+      return response.stream(createReadStream(mediaPath))
+    }
+    const match = /^bytes=(\d*)-(\d*)$/.exec(range)
+    if (!match || (!match[1] && !match[2])) {
+      response.header('Content-Range', `bytes */${size}`)
+      return response.status(416)
+    }
+    const suffixLength = match[1] ? 0 : Number(match[2])
+    const start = match[1] ? Number(match[1]) : Math.max(0, size - suffixLength)
+    const end = match[2] && match[1] ? Math.min(Number(match[2]), size - 1) : size - 1
+    if (start >= size || end < start) {
+      response.header('Content-Range', `bytes */${size}`)
+      return response.status(416)
+    }
     response.status(206)
     response.header('Content-Range', `bytes ${start}-${end}/${size}`)
     response.header('Content-Length', String(end - start + 1))

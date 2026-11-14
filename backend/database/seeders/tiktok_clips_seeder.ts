@@ -34,50 +34,54 @@ const communities = {
 }
 
 const clips = [
-  ['kpop', 'dpxygi', '7584917218102627639'],
-  ['kpop', 'ryupjmn', '7650275186280877319'],
-  ['dorama', 'rinareimin', '7648837868626005255'],
-  ['dorama', 'ktsyui', '7679453307622165767'],
-  ['dorama', 'i7fundos', '7240827876646440197'],
-  ['anime', 'sge.cc1', '7597737066771877175'],
-  ['anime', '.uzumaky', '7702171909164649750'],
-  ['cinema', 'that.is.cinema', '7652627376186166559'],
-  ['cinema', 'klyx473', '7664276139682188576'],
-  ['cinema', 'greenvleaf', '7669026213033299232'],
-  ['futebol', 'kiqoprdz', '7666923293248736534'],
-  ['futebol', 'njr.rnz', '7440113873455238455'],
-  ['futebol', 'futszedits', '7646382613992688904'],
-  ['futebol', 'primexz81', '7656539710168272146'],
-  ['futebol', 'thhnlzx', '7704482219808673030'],
-  ['futebol', 'crvg.gigante', '7704489644519443730'],
-  ['futebol', 'vittoac', '7613067480298163477'],
-  ['futebol', 'vittoac', '7643830920805551380'],
+  ['kpop', 'editBTS.mp4'], ['kpop', 'bts2.mp4'],
+  ['dorama', 'dorama.mp4'], ['dorama', 'dorama2.mp4'], ['dorama', 'editMyNameDorama.mp4'],
+  ['anime', 'dmls.mp4'], ['anime', 'naruto.mp4'],
+  ['cinema', 'movies.mp4'], ['cinema', 'odisseia.mp4'], ['cinema', 'srna.mp4'],
+  ['futebol', 'mengo.mp4'], ['futebol', 'ney.mp4'], ['futebol', 'ney2.mp4'],
+  ['futebol', 'paqueta.mp4'], ['futebol', 'paqueta2.mp4'], ['futebol', 'vasco.mp4'],
+  ['futebol', 'vasco2.mp4'], ['futebol', 'vasco3.mp4'],
+] as const
+
+const metadata = [
+  ['BTS em uma noite inesquecível', 'Uma edição especial com a energia e a presença de palco do BTS.'],
+  ['O momento que todo ARMY esperava', 'Um recorte marcante para reviver aquele momento favorito.'],
+  ['Uma cena para guardar', 'Uma cena intensa de dorama com emoção do começo ao fim.'],
+  ['Quando o olhar diz tudo', 'Aquele encontro silencioso que fala mais do que qualquer diálogo.'],
+  ['My Name: acerto de contas', 'Uma edição cheia de tensão, atitude e cenas inesquecíveis.'],
+  ['O poder desperta', 'Um edit de anime com ação, impacto e uma virada memorável.'],
+  ['Naruto nunca desiste', 'Um momento de determinação para quem acompanha essa jornada.'],
+  ['Cenas que ficam na memória', 'Uma seleção cinematográfica para quem ama grandes momentos na tela.'],
+  ['Uma viagem para outro mundo', 'Atmosfera, aventura e imagens que parecem saídas de uma odisseia.'],
+  ['O instante antes da virada', 'Uma edição de filme com clima, tensão e um final marcante.'],
+  ['A paixão rubro-negra', 'Energia de arquibancada e futebol para vibrar junto.'],
+  ['Neymar em estado puro', 'Habilidade, velocidade e aquele lance que merece replay.'],
+  ['Quando o craque resolve', 'Um momento de talento e criatividade dentro de campo.'],
+  ['Paquetá comanda o jogo', 'Intensidade e personalidade em uma edição do camisa 10.'],
+  ['A classe de Paquetá', 'Um recorte curto com técnica, visão e muita presença.'],
+  ['Vasco até o fim', 'A força da torcida e a paixão pelo Gigante da Colina.'],
+  ['Um sentimento inexplicável', 'Um momento vascaíno para cantar, lembrar e compartilhar.'],
+  ['Vamos juntos, Vasco', 'A torcida empurra e o time responde em mais um grande momento.'],
 ] as const
 
 export default class TikTokClipsSeeder extends BaseSeeder {
   static environment = ['development', 'test']
 
   async run() {
-    const existingClips = await Clip.query().whereNotNull('tiktokUrl')
-    const existingVideoIds = new Set(
-      existingClips
-        .map((clip) => clip.tiktokUrl?.match(/\/video\/(\d+)/)?.[1])
-        .filter((videoId): videoId is string => Boolean(videoId))
-    )
+    const existingClips = await Clip.query().where('userId', 'seed-tiktok').orderBy('id', 'asc')
     let inserted = 0
+    let updated = 0
 
-    for (const [communityKey, creator, videoId] of clips) {
-      if (existingVideoIds.has(videoId)) continue
-
+    for (const [index, [communityKey, filename]] of clips.entries()) {
       const community = communities[communityKey]
-      await Clip.create({
-        title: `${community.name} · @${creator}`,
-        description: `Clipe público do TikTok de @${creator}.`,
+      const data = {
+        title: metadata[index][0],
+        description: metadata[index][1],
         category: community.category,
         community: community.id,
-        music: 'Áudio do TikTok',
+        music: 'Áudio original',
         musicId: null,
-        creator: `@${creator}`,
+        creator: 'Plataforma de Clipes',
         userId: 'seed-tiktok',
         duration: '0:30',
         videoStart: 0,
@@ -87,18 +91,24 @@ export default class TikTokClipsSeeder extends BaseSeeder {
         art: community.art,
         theme: community.theme,
         status: 'Publicado',
-        mediaFilename: null,
-        mediaType: null,
+        mediaFilename: `assets/videos/${communityKey === 'cinema' ? 'filmes e series' : communityKey}/${filename}`,
+        mediaType: 'video/mp4',
         audioFilename: null,
         audioType: null,
-        tiktokUrl: `https://www.tiktok.com/@${creator}/video/${videoId}`,
+        tiktokUrl: null,
         views: 0,
         likes: 0,
-      })
-      existingVideoIds.add(videoId)
-      inserted++
+      }
+      if (existingClips[index]) {
+        existingClips[index].merge(data)
+        await existingClips[index].save()
+        updated++
+      } else {
+        await Clip.create(data)
+        inserted++
+      }
     }
 
-    console.log(`TikTok seed: ${inserted} novos clipes adicionados.`)
+    console.log(`Vídeos locais: ${inserted} novos, ${updated} atualizados.`)
   }
 }

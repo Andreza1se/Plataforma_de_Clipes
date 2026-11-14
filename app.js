@@ -17,11 +17,11 @@ const starter = {
     { id: 'admin', name: 'Caio Admin', email: 'admin@fanclips.app', password: 'admin123', role: 'Admin', joined: '01 out 2026' }
   ],
   clips: [
-    { id: 'c1', title: 'O drible que parou o estádio', description: 'Um lance, mil ângulos e aquele replay que a gente vê de novo toda vez. Qual é o seu momento favorito?', category: 'Futebol', community: 'neymar', music: 'Dia de jogo · FanClips Studio', musicId: 'stadium', creator: 'Rafael Lima', userId: 'u2', views: 12480, likes: 892, duration: '0:34', art: '⚽', theme: 'thumb-ball', date: 'há 2 horas', status: 'Publicado', comments: [{ name: 'Ana Costa', text: 'Esse lance é absurdo!' }] },
-    { id: 'c2', title: 'O refrão que todo ARMY sabe', description: 'Aquela parte da música que transforma qualquer show em um só coro. 💜', category: 'K-pop', community: 'army', music: 'Afterglow · FanClips Studio', musicId: 'afterglow', creator: 'Ana Costa', userId: 'u1', views: 8560, likes: 641, duration: '0:22', art: '💜', theme: 'thumb-stage', date: 'há 5 horas', status: 'Publicado', comments: [{ name: 'Marina Alves', text: 'Army até o fim 💜' }] },
-    { id: 'c3', title: 'Esse final de dorama me destruiu', description: 'Sem spoilers: só a cena, a reação e uma trilha pra sentir tudo de novo. Qual episódio te marcou?', category: 'Doramas', community: 'doramas', music: 'First Snow · FanClips Studio', musicId: 'first-snow', creator: 'Marina Alves', userId: 'u3', views: 5390, likes: 475, duration: '0:39', art: '🎞️', theme: 'thumb-stage', date: 'ontem', status: 'Publicado', comments: [] },
-    { id: 'c4', title: 'POV: seu personagem favorito aparece', description: 'A entrada que merece replay em câmera lenta. Conta qual personagem sempre rouba a cena.', category: 'Anime', community: 'anime', music: 'Pulse · FanClips Studio', musicId: 'pulse', creator: 'Rafael Lima', userId: 'u2', views: 2310, likes: 208, duration: '0:29', art: '🌸', theme: 'thumb-road', date: 'ontem', status: 'Publicado', comments: [] },
-    { id: 'c5', title: 'Meu top 3 cenas de romance', description: 'Três cenas e uma música que combina com todas. Qual cena entraria no seu top?', category: 'Séries', community: 'cinema', music: 'First Snow · FanClips Studio', musicId: 'first-snow', creator: 'Ana Costa', userId: 'u1', views: 1800, likes: 163, duration: '0:41', art: '🎬', theme: 'thumb-field', date: 'há 3 dias', status: 'Pendente', comments: [] }
+    // { id: 'c1', title: 'O drible que parou o estádio', description: 'Um lance, mil ângulos e aquele replay que a gente vê de novo toda vez. Qual é o seu momento favorito?', category: 'Futebol', community: 'neymar', music: 'Dia de jogo · FanClips Studio', musicId: 'stadium', creator: 'Rafael Lima', userId: 'u2', views: 12480, likes: 892, duration: '0:34', art: '⚽', theme: 'thumb-ball', date: 'há 2 horas', status: 'Publicado', comments: [{ name: 'Ana Costa', text: 'Esse lance é absurdo!' }] },
+    // { id: 'c2', title: 'O refrão que todo ARMY sabe', description: 'Aquela parte da música que transforma qualquer show em um só coro. 💜', category: 'K-pop', community: 'army', music: 'Afterglow · FanClips Studio', musicId: 'afterglow', creator: 'Ana Costa', userId: 'u1', views: 8560, likes: 641, duration: '0:22', art: '💜', theme: 'thumb-stage', date: 'há 5 horas', status: 'Publicado', comments: [{ name: 'Marina Alves', text: 'Army até o fim 💜' }] },
+    // { id: 'c3', title: 'Esse final de dorama me destruiu', description: 'Sem spoilers: só a cena, a reação e uma trilha pra sentir tudo de novo. Qual episódio te marcou?', category: 'Doramas', community: 'doramas', music: 'First Snow · FanClips Studio', musicId: 'first-snow', creator: 'Marina Alves', userId: 'u3', views: 5390, likes: 475, duration: '0:39', art: '🎞️', theme: 'thumb-stage', date: 'ontem', status: 'Publicado', comments: [] },
+    // { id: 'c4', title: 'POV: seu personagem favorito aparece', description: 'A entrada que merece replay em câmera lenta. Conta qual personagem sempre rouba a cena.', category: 'Anime', community: 'anime', music: 'Pulse · FanClips Studio', musicId: 'pulse', creator: 'Rafael Lima', userId: 'u2', views: 2310, likes: 208, duration: '0:29', art: '🌸', theme: 'thumb-road', date: 'ontem', status: 'Publicado', comments: [] },
+    // { id: 'c5', title: 'Meu top 3 cenas de romance', description: 'Três cenas e uma música que combina com todas. Qual cena entraria no seu top?', category: 'Séries', community: 'cinema', music: 'First Snow · FanClips Studio', musicId: 'first-snow', creator: 'Ana Costa', userId: 'u1', views: 1800, likes: 163, duration: '0:41', art: '🎬', theme: 'thumb-field', date: 'há 3 dias', status: 'Pendente', comments: [] }
   ],
   watched: [], likes: [], comments: {}
 };
@@ -63,6 +63,24 @@ function notify(message) {
 
 function setView(next) { view = next; page = 1; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function clipById(id) { return db.clips.find(clip => clip.id === id); }
+
+function stopDetailMedia() {
+  const dialog = document.querySelector('#detail-dialog');
+  dialog?.querySelectorAll('video, audio').forEach(media => {
+    media.pause();
+    media.removeAttribute('src');
+    media.load();
+  });
+}
+
+function stopDetailMedia() {
+  const dialog = document.querySelector('#detail-dialog');
+  dialog?.querySelectorAll('video, audio').forEach(media => {
+    media.pause();
+    media.removeAttribute('src');
+    media.load();
+  });
+}
 
 function clipCard(clip, compact = false) {
   return `<article class="${compact ? 'compact-card' : 'clip-card'}" data-open="${escapeHTML(clip.id)}" tabindex="0" role="button" aria-label="Abrir ${escapeHTML(clip.title)}">
@@ -398,7 +416,11 @@ document.addEventListener('click', async event => {
   const target = event.target.closest('button,[data-open]'); if (!target) return;
   if (target.dataset.view) { community = ''; setView(target.dataset.view); return; }
   if (target.dataset.action) { if (target.dataset.action === 'logout') { db.user = null; saveData(); document.querySelector('#auth-dialog').close(); setView('feed'); notify('Você saiu da conta.'); } else act(target.dataset.action); return; }
-  if (target.dataset.close) { document.querySelector(`#${target.dataset.close}`).close(); return; }
+  if (target.dataset.close) {
+    if (target.dataset.close === 'detail-dialog') stopDetailMedia();
+    document.querySelector(`#${target.dataset.close}`).close();
+    return;
+  }
   if (target.dataset.authMode) { openAuth(target.dataset.authMode); return; }
   if (target.dataset.open) { openDetail(target.dataset.open); return; }
   if (target.dataset.community) { community = target.dataset.community; category = ''; query = ''; document.querySelector('#search').value = ''; setView('feed'); return; }
@@ -413,7 +435,10 @@ document.addEventListener('click', async event => {
   if (target.dataset.like) { if (!currentUser()) { openAuth(); return; } const id = target.dataset.like, clip = clipById(id); if (db.likes.includes(id)) { db.likes = db.likes.filter(item => item !== id); clip.likes--; } else { db.likes.push(id); clip.likes++; } saveData(); openDetail(id); return; }
 });
 
+document.querySelector('#detail-dialog').addEventListener('close', stopDetailMedia);
+
 document.querySelector('#account-button').addEventListener('click', () => act('account'));
+document.querySelector('#detail-dialog').addEventListener('close', stopDetailMedia);
 document.querySelector('#search').addEventListener('input', event => { query = event.target.value; category = ''; community = ''; page = 1; if (view !== 'feed') view = 'feed'; render(); });
 
 document.addEventListener('change', event => {
@@ -594,8 +619,10 @@ async function initializeBackend() {
   try {
     const response = await fetch('/api/clips'); if (!response.ok) return;
     const serverClips = await response.json();
-    const known = new Set(db.clips.map(clip => clip.id));
-    db.clips.push(...serverClips.filter(clip => !known.has(clip.id)));
+    // O servidor é a fonte de verdade para clipes persistidos; substitui versões antigas
+    // guardadas no navegador e preserva apenas os clipes locais ainda não sincronizados.
+    const localClips = db.clips.filter(clip => !String(clip.id).startsWith('server-'));
+    db.clips = [...localClips, ...serverClips];
   } catch { }
 }
 initializeBackend().finally(render);
