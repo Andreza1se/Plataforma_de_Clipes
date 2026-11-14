@@ -857,19 +857,29 @@ a {
 
 .comment-form {
     display: flex;
-    gap: 6px;
-    margin-top: 12px
+    gap: 8px;
+    margin-top: 12px;
+    align-items: center;
 }
 
 .comment-form input {
-    min-width: 0;
-    flex: 1;
-    background: #111511;
+    flex: 1; 
+    background: transparent;
     border: 1px solid var(--line);
-    border-radius: 5px;
-    padding: 9px;
+    border-radius: 20px;
+    padding: 10px 14px;
     color: var(--text);
-    font-size: 10px
+    font-size: 13px;
+    outline: none;
+}
+
+.comment-form button.button {
+    width: auto;
+    flex-shrink: 0;
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin: 0;
 }
 
 .toast {
