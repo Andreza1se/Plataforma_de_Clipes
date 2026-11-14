@@ -174,14 +174,36 @@ a {
 }
 
 .avatar-button {
-    height: 34px;
-    width: 34px;
+    display: grid;
+    place-items: center;
+    height: 36px;
+    width: 36px;
+    padding: 0;
     border-radius: 50%;
-    border: 1px solid #6a755e;
-    background: #293127;
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--panel-2), var(--panel-2)) padding-box,
+        conic-gradient(var(--lime), #62d3a2, #8dbbff, var(--lime)) border-box;
     color: var(--lime);
-    font-size: 11px;
-    font-weight: 700
+    font: 700 12px "Space Grotesk", sans-serif;
+    letter-spacing: .3px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s
+}
+
+.avatar-button:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 4px #c6f36b22
+}
+
+.avatar-button:focus-visible,
+.login-button:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 2px
+}
+
+.login-button {
+    white-space: nowrap
 }
 
 .app-shell {
@@ -863,7 +885,7 @@ a {
 }
 
 .comment-form input {
-    flex: 1; 
+    flex: 1;
     background: transparent;
     border: 1px solid var(--line);
     border-radius: 20px;
@@ -1005,9 +1027,16 @@ a {
         font-size: 19px
     }
 
+    .top-actions .button.login-button {
+        width: auto;
+        height: 34px;
+        padding: 0 12px;
+        font-size: 12px
+    }
+
     .avatar-button {
-        width: 31px;
-        height: 31px
+        width: 32px;
+        height: 32px
     }
 
     .app-shell {

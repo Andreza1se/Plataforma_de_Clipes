@@ -16,13 +16,7 @@ const starter = {
     { id: 'u3', name: 'Marina Alves', email: 'marina@fanclips.app', password: 'demo123', role: 'Usuário', joined: '31 out 2026' },
     { id: 'admin', name: 'Caio Admin', email: 'admin@fanclips.app', password: 'admin123', role: 'Admin', joined: '01 out 2026' }
   ],
-  clips: [
-    // { id: 'c1', title: 'O drible que parou o estádio', description: 'Um lance, mil ângulos e aquele replay que a gente vê de novo toda vez. Qual é o seu momento favorito?', category: 'Futebol', community: 'neymar', music: 'Dia de jogo · FanClips Studio', musicId: 'stadium', creator: 'Rafael Lima', userId: 'u2', views: 12480, likes: 892, duration: '0:34', art: '⚽', theme: 'thumb-ball', date: 'há 2 horas', status: 'Publicado', comments: [{ name: 'Ana Costa', text: 'Esse lance é absurdo!' }] },
-    // { id: 'c2', title: 'O refrão que todo ARMY sabe', description: 'Aquela parte da música que transforma qualquer show em um só coro. 💜', category: 'K-pop', community: 'army', music: 'Afterglow · FanClips Studio', musicId: 'afterglow', creator: 'Ana Costa', userId: 'u1', views: 8560, likes: 641, duration: '0:22', art: '💜', theme: 'thumb-stage', date: 'há 5 horas', status: 'Publicado', comments: [{ name: 'Marina Alves', text: 'Army até o fim 💜' }] },
-    // { id: 'c3', title: 'Esse final de dorama me destruiu', description: 'Sem spoilers: só a cena, a reação e uma trilha pra sentir tudo de novo. Qual episódio te marcou?', category: 'Doramas', community: 'doramas', music: 'First Snow · FanClips Studio', musicId: 'first-snow', creator: 'Marina Alves', userId: 'u3', views: 5390, likes: 475, duration: '0:39', art: '🎞️', theme: 'thumb-stage', date: 'ontem', status: 'Publicado', comments: [] },
-    // { id: 'c4', title: 'POV: seu personagem favorito aparece', description: 'A entrada que merece replay em câmera lenta. Conta qual personagem sempre rouba a cena.', category: 'Anime', community: 'anime', music: 'Pulse · FanClips Studio', musicId: 'pulse', creator: 'Rafael Lima', userId: 'u2', views: 2310, likes: 208, duration: '0:29', art: '🌸', theme: 'thumb-road', date: 'ontem', status: 'Publicado', comments: [] },
-    // { id: 'c5', title: 'Meu top 3 cenas de romance', description: 'Três cenas e uma música que combina com todas. Qual cena entraria no seu top?', category: 'Séries', community: 'cinema', music: 'First Snow · FanClips Studio', musicId: 'first-snow', creator: 'Ana Costa', userId: 'u1', views: 1800, likes: 163, duration: '0:41', art: '🎬', theme: 'thumb-field', date: 'há 3 dias', status: 'Pendente', comments: [] }
-  ],
+  clips: [],
   watched: [], likes: [], comments: {}
 };
 
@@ -63,15 +57,6 @@ function notify(message) {
 
 function setView(next) { view = next; page = 1; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function clipById(id) { return db.clips.find(clip => clip.id === id); }
-
-function stopDetailMedia() {
-  const dialog = document.querySelector('#detail-dialog');
-  dialog?.querySelectorAll('video, audio').forEach(media => {
-    media.pause();
-    media.removeAttribute('src');
-    media.load();
-  });
-}
 
 function stopDetailMedia() {
   const dialog = document.querySelector('#detail-dialog');
@@ -158,7 +143,23 @@ function renderAdmin() {
 
 function render() {
   document.querySelectorAll('.nav-link').forEach(button => button.classList.toggle('active', button.dataset.view === view));
-  const account = document.querySelector('#account-button'), user = currentUser(); account.textContent = user ? initials(user.name) : 'CA'; account.title = user ? user.name : 'Entrar ou criar conta';
+  
+  const accountBtn = document.querySelector('#account-button');
+if (accountBtn) {
+  const user = currentUser();
+  if (user) {
+    accountBtn.textContent = initials(user.name);
+    accountBtn.title = user.name;
+    accountBtn.className = 'avatar-button';
+    accountBtn.setAttribute('aria-label', `Conta de ${user.name}`);
+  } else {
+    accountBtn.textContent = 'Fazer login';
+    accountBtn.title = 'Entrar ou criar conta';
+    accountBtn.className = 'button button-primary login-button';
+    accountBtn.setAttribute('aria-label', 'Fazer login');
+  }
+}
+  
   if (view === 'profile') return renderProfile();
   if (view === 'edit-profile') return renderEditProfile();
   if (view === 'admin') return renderAdmin();
@@ -315,18 +316,14 @@ function openDetail(id) {
   if (video && overlayAudio) {
     const vStart = Math.max(0, Number(clip.videoStart) || 0);
     const aStart = Math.max(0, Number(clip.audioStart) || 0);
-    // Garantir que vEnd tenha um limite real matemático
     let vEnd = Number(clip.videoEnd) || Infinity;
     
-    // Variável que impede o código de atrapalhar enquanto você arrasta a barra
     let isSeeking = false;
 
-    // Apenas alinha o áudio se ele estiver muito fora de sincronia (> 0.2s)
     const forceSync = () => {
       if (overlayAudio.readyState < 1 || !Number.isFinite(overlayAudio.duration)) return;
       const elapsed = Math.max(0, video.currentTime - vStart);
       
-      // O símbolo % (módulo) garante que se o vídeo for longo, o áudio reinicia perfeitamente
       const position = (aStart + elapsed) % overlayAudio.duration;
       
       if (Math.abs(overlayAudio.currentTime - position) > 0.2) {
@@ -360,32 +357,26 @@ function openDetail(id) {
     
     video.addEventListener('pause', () => overlayAudio.pause());
 
-    // Quando o usuário CLICA e começa a arrastar a barra
     video.addEventListener('seeking', () => {
       isSeeking = true;
     });
 
-    // Quando o usuário SOLTA a barra
     video.addEventListener('seeked', () => {
       isSeeking = false;
-      // Impede de arrastar pra fora do corte inicial
       if (video.currentTime < vStart) {
         video.currentTime = vStart;
-        return; // Retorna pois o comando acima vai acionar outro 'seeked' naturalmente
+        return; 
       }
-      // Impede de arrastar além do corte final
       if (video.currentTime > vEnd) {
         video.currentTime = vEnd - 0.1; 
         return;
       }
-      // Se soltou dentro do limite certo, sincroniza o áudio!
       forceSync();
     });
 
     video.addEventListener('timeupdate', () => {
-      if (isSeeking) return; // Deixa o usuário arrastar em paz sem bugar
+      if (isSeeking) return; 
       
-      // Chegou no fim do corte, reseta pros tempos iniciais criando o "Loop" perfeito
       if (video.currentTime >= vEnd - 0.05) {
         video.currentTime = vStart;
         overlayAudio.currentTime = aStart % overlayAudio.duration;
@@ -432,13 +423,10 @@ document.addEventListener('click', async event => {
   if (target.dataset.approve) { const clip = clipById(target.dataset.approve); if (clip) { const serverId = clip.id.match(/^server-(\d+)$/)?.[1]; if (serverId) { try { const response = await fetch(`/api/clips/${serverId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': csrfToken() }, body: JSON.stringify({ status: 'Publicado' }) }); if (!response.ok) throw new Error('Não foi possível publicar o clipe no servidor.'); } catch (error) { notify(error.message); return; } } clip.status = 'Publicado'; clip.date = 'agora'; saveData(); render(); notify('Clipe aprovado e publicado.'); } return; }
   if (target.dataset.delete) { const clip = clipById(target.dataset.delete); if (clip && confirm(`Remover “${clip.title}” da plataforma?`)) { db.clips = db.clips.filter(item => item !== clip.id); saveData(); render(); notify('Clipe removido.'); } return; }
   if (target.dataset.watch) { const id = target.dataset.watch; db.watched.includes(id) ? db.watched = db.watched.filter(item => item !== id) : db.watched.push(id); saveData(); openDetail(id); return; }
-  if (target.dataset.like) { if (!currentUser()) { openAuth(); return; } const id = target.dataset.like, clip = clipById(id); if (db.likes.includes(id)) { db.likes = db.likes.filter(item => item !== id); clip.likes--; } else { db.likes.push(id); clip.likes++; } saveData(); openDetail(id); return; }
+  if (target.dataset.like) { if (!currentUser()) { openAuth(); return; } const id = target.target.dataset.like, clip = clipById(id); if (db.likes.includes(id)) { db.likes = db.likes.filter(item => item !== id); clip.likes--; } else { db.likes.push(id); clip.likes++; } saveData(); openDetail(id); return; }
 });
 
-document.querySelector('#detail-dialog').addEventListener('close', stopDetailMedia);
-
 document.querySelector('#account-button').addEventListener('click', () => act('account'));
-document.querySelector('#detail-dialog').addEventListener('close', stopDetailMedia);
 document.querySelector('#search').addEventListener('input', event => { query = event.target.value; category = ''; community = ''; page = 1; if (view !== 'feed') view = 'feed'; render(); });
 
 document.addEventListener('change', event => {
@@ -465,7 +453,6 @@ document.addEventListener('change', event => {
       }
     });
 
-    // NOVO: Prender a prévia do vídeo no tempo selecionado
     video.addEventListener('timeupdate', () => {
       const vStart = Number(document.querySelector('#clip-video-start')?.value) || 0;
       const vEnd = Number(document.querySelector('#clip-video-end')?.value) || video.duration;
@@ -501,7 +488,6 @@ document.addEventListener('change', event => {
       if (submit) submit.disabled = true;
     });
 
-    // NOVO: Prender a prévia do áudio no tempo selecionado
     audioEl.addEventListener('timeupdate', () => {
       const aStart = Number(document.querySelector('#clip-audio-start')?.value) || 0;
       const aEnd = Number(document.querySelector('#clip-audio-end')?.value) || audioEl.duration;
@@ -525,11 +511,23 @@ document.addEventListener('change', event => {
 document.addEventListener('input', event => {
   if (['clip-video-start', 'clip-video-end', 'clip-audio-start', 'clip-audio-end'].includes(event.target.id)) {
     updateClipTimeline(event.target.id);
+    
+    if (event.target.id.includes('video')) {
+      const video = document.querySelector('#video-preview video');
+      if (video) video.currentTime = Number(document.querySelector('#clip-video-start').value) || 0;
+    } else if (event.target.id.includes('audio')) {
+      const audio = document.querySelector('#audio-preview audio');
+      if (audio) audio.currentTime = Number(document.querySelector('#clip-audio-start').value) || 0;
+    }
   }
+  
   if (event.target.id === 'audio-offset') {
     const audioStart = document.querySelector('#clip-audio-start');
     if (audioStart) audioStart.value = event.target.value;
     updateClipTimeline('clip-audio-start');
+    
+    const audio = document.querySelector('#audio-preview audio');
+    if (audio) audio.currentTime = Number(event.target.value) || 0;
   }
 });
 
@@ -619,8 +617,6 @@ async function initializeBackend() {
   try {
     const response = await fetch('/api/clips'); if (!response.ok) return;
     const serverClips = await response.json();
-    // O servidor é a fonte de verdade para clipes persistidos; substitui versões antigas
-    // guardadas no navegador e preserva apenas os clipes locais ainda não sincronizados.
     const localClips = db.clips.filter(clip => !String(clip.id).startsWith('server-'));
     db.clips = [...localClips, ...serverClips];
   } catch { }
